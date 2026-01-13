@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Unidad 2 · La Geosfera</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f4f6fa; color:#111; }
+    header { background:#fff; padding:16px; text-align:center; border-bottom:1px solid #ddd; }
+    h1 { margin:0; font-size:20px; }
+    .sub { font-size:14px; color:#555; margin-top:6px; }
+    main { max-width:750px; margin:0 auto; padding:20px; }
+
+    .bloque { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; border:1px solid #e0e0e0; }
+    h2 { margin-top:0; font-size:18px; }
+
+    .boton {
+      display:block; width:100%; padding:14px; margin-top:10px;
+      font-size:16px; font-weight:bold; border-radius:10px; border:none;
+      cursor:pointer; background:#2a2fdf; color:#fff;
+    }
+    .boton.sec { background:#e9ebff; color:#111; }
+    .boton.volver { background:#ddd; color:#111; }
+    .boton:hover { opacity:0.9; }
+
+    .contenido { display:none; margin-top:12px; line-height:1.6; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#f1f3ff; font-size:12px; margin-right:6px; }
+    .pregunta { font-weight:bold; margin-top:12px; }
+    ul { margin:8px 0 0 18px; }
+    footer { text-align:center; font-size:12px; color:#666; margin:30px 0 10px; }
+
+    .opt { display:block; padding:10px; border:1px solid #e6e6e6; border-radius:10px; margin:8px 0; cursor:pointer; }
+    .opt:hover { background:#fafafa; }
+    .ok { color:#0a7a2f; font-weight:bold; }
+    .bad { color:#b00020; font-weight:bold; }
+  </style>
+
+  <script>
+    function mostrar(id){
+      document.querySelectorAll('.contenido').forEach(c => c.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      window.scrollTo(0,0);
+    }
+    function volver(){
+      document.querySelectorAll('.contenido').forEach(c => c.style.display = 'none');
+      window.scrollTo(0,0);
+    }
+
+    // Mini test autocorregible (simple, sin líos)
+    const quiz = [
+      {
+        q: "1) ¿Qué es la geosfera?",
+        opts: ["El agua de la Tierra", "La parte de la Tierra formada por rocas", "El aire que rodea la Tierra"],
+        ok: 1,
+        exp: "Geosfera = parte sólida rocosa."
+      },
+      {
+        q: "2) Orden correcto de capas de la Tierra (de fuera a dentro):",
+        opts: ["Núcleo → Manto → Corteza", "Corteza → Manto → Núcleo", "Manto → Corteza → Núcleo"],
+        ok: 1,
+        exp: "De fuera a dentro: corteza, manto, núcleo."
+      },
+      {
+        q: "3) Roca típica de la corteza oceánica:",
+        opts: ["Granito", "Basalto", "Mármol"],
+        ok: 1,
+        exp: "Oceánica: basalto. Continental: granito."
+      },
+      {
+        q: "4) ¿Qué es un mineral?",
+        opts: ["Un sólido natural inorgánico con estructura ordenada", "Un tipo de nube", "Un gas de la atmósfera"],
+        ok: 0,
+        exp: "Mineral: sólido natural e inorgánico con composición definida."
+      },
+      {
+        q: "5) ¿Qué es el epicentro?",
+        opts: ["El punto en la superficie donde llegan primero las ondas sísmicas", "El lugar donde se forma una nube", "Una parte del volcán"],
+        ok: 0,
+        exp: "Epicentro: superficie. Hipocentro: interior."
+      }
+    ];
+
+    let qi = 0, hits = 0, answered = false;
+
+    function renderQuiz(){
+      const box = document.getElementById("quizBox");
+      const status = document.getElementById("quizStatus");
+      const fb = document.getElementById("quizFeedback");
+
+      answered = false;
+      fb.innerHTML = "";
+      status.innerHTML = `<span class="pill">Pregunta ${qi+1}/${quiz.length}</span> <span class="pill">Aciertos ${hits}</span>`;
+
+      const item = quiz[qi];
+      let html = `<div class="pregunta">${item.q}</div>`;
+      item.opts.forEach((t, idx) => {
+        html += `<div class="opt" onclick="pick(${idx}, this)">${t}</div>`;
+      });
+      box.innerHTML = html;
+    }
+
+    function pick(idx, el){
+      if(answered) return;
+      answered = true;
+
+      const fb = document.getElementById("quizFeedback");
+      const item = quiz[qi];
+      const opts = Array.from(document.querySelectorAll("#quizBox .opt"));
+
+      // marcar correcta
+      opts[item.ok].style.borderColor = "#0a7a2f";
+      opts[item.ok].style.background = "#f0fff5";
+
+      if(idx === item.ok){
+        el.style.borderColor = "#0a7a2f";
+        el.style.background = "#f0fff5";
+        hits++;
+        fb.innerHTML = `<span class="ok">Correcto.</span> ${item.exp}`;
+      } else {
+        el.style.borderColor = "#b00020";
+        el.style.background = "#fff0f0";
+        fb.innerHTML = `<span class="bad">Casi.</span> ${item.exp}`;
+      }
+
+      document.getElementById("quizStatus").innerHTML =
+        `<span class="pill">Pregunta ${qi+1}/${quiz.length}</span> <span class="pill">Aciertos ${hits}</span>`;
+    }
+
+    function nextQ(){
+      qi = (qi + 1) % quiz.length;
+      renderQuiz();
+    }
+
+    function resetQuiz(){
+      qi = 0; hits = 0;
+      renderQuiz();
+      document.getElementById("quizFeedback").innerHTML = "";
+    }
+
+    window.addEventListener("load", () => {
+      if(document.getElementById("quizBox")) renderQuiz();
+    });
+  </script>
+</head>
+
+<body>
+<header>
+  <h1>🪨 Unidad 2 · La Geosfera</h1>
+  <div class="sub">Corto y claro · una cosa cada vez</div>
+</header>
+
+<main>
+
+  <!-- MENÚ -->
+  <div class="bloque">
+    <h2>¿Qué quieres hacer?</h2>
+    <button class="boton" onclick="mostrar('estudio')">📘 Estudiar (modo tranquilo)</button>
+    <button class="boton sec" onclick="mostrar('repaso')">🧠 Repaso rápido</button>
+    <button class="boton sec" onclick="mostrar('quiz')">✅ Mini test (autocorregido)</button>
+    <button class="boton sec" onclick="location.href='index.html'">🏠 Volver al portal</button>
+  </div>
+
+  <!-- ESTUDIO -->
+  <div id="estudio" class="bloque contenido">
+    <h2>📘 Estudio</h2>
+
+    <p><strong>Geosfera</strong> = parte sólida de la Tierra formada por <strong>rocas</strong>.</p>
+
+    <p><strong>Capas de la Tierra</strong> (de fuera a dentro):</p>
+    <ul>
+      <li><strong>Corteza</strong>: la capa más externa (continentes y fondo oceánico).</li>
+      <li><strong>Manto</strong>: capa muy gruesa, alta temperatura y presión.</li>
+      <li><strong>Núcleo</strong>: muy caliente, principalmente hierro y níquel.</li>
+    </ul>
+
+    <p><strong>Corteza</strong>:</p>
+    <ul>
+      <li>Continental: rocas menos densas, destaca el <strong>granito</strong>.</li>
+      <li>Oceánica: más densa, destaca el <strong>basalto</strong>.</li>
+    </ul>
+
+    <p><strong>Mineral</strong>:</p>
+    <ul>
+      <li>Sólido natural e inorgánico</li>
+      <li>Composición definida</li>
+      <li>Estructura ordenada</li>
+    </ul>
+
+    <p><strong>Rocas</strong> (según su origen):</p>
+    <ul>
+      <li><strong>Sedimentarias</strong>: por acumulación de materiales/restos.</li>
+      <li><strong>Magmáticas</strong>: por enfriamiento del magma.</li>
+      <li><strong>Metamórficas</strong>: por presión y temperatura sin fundirse.</li>
+    </ul>
+
+    <p><strong>Terremotos</strong>:</p>
+    <ul>
+      <li><strong>Hipocentro</strong>: donde se libera la energía (interior).</li>
+      <li><strong>Epicentro</strong>: punto de la superficie donde llegan primero las ondas.</li>
+    </ul>
+
+    <p><strong>Volcanes</strong> expulsan: lava, piroclastos (cenizas, lapilli…) y gases.</p>
+
+    <button class="boton volver" onclick="volver()">⬅ Volver</button>
+  </div>
+
+  <!-- REPASO -->
+  <div id="repaso" class="bloque contenido">
+    <h2>🧠 Repaso rápido</h2>
+
+    <p><span class="pill">Idea 1</span> Geosfera = rocas.</p>
+    <p><span class="pill">Idea 2</span> Capas: corteza → manto → núcleo.</p>
+    <p><span class="pill">Idea 3</span> Granito (continental) / basalto (oceánica).</p>
+    <p><span class="pill">Idea 4</span> Mineral: sólido natural e inorgánico, estructura ordenada.</p>
+    <p><span class="pill">Idea 5</span> Epicentro (superficie) / hipocentro (interior).</p>
+
+    <button class="boton volver" onclick="volver()">⬅ Volver</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="bloque contenido">
+    <h2>✅ Mini test (autocorregido)</h2>
+    <div id="quizStatus" style="margin-bottom:10px;"></div>
+
+    <div id="quizBox"></div>
+
+    <div style="margin-top:10px;">
+      <button class="boton sec" onclick="nextQ()">Siguiente</button>
+      <button class="boton sec" onclick="resetQuiz()">Reiniciar</button>
+      <div id="quizFeedback" style="margin-top:10px;"></div>
+    </div>
+
+    <button class="boton volver" onclick="volver()">⬅ Volver</button>
+  </div>
+
+</main>
+
+<footer>
+  Unidad 2 · Poco a poco, pero sin perder el hilo 🙂
+</footer>
+</body>
+</html>
